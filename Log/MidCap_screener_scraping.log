@@ -1,26 +1,13 @@
-2025-03-14 15:23:53,878 - INFO - Scraping Process Started for MidCap Companies
-2025-03-14 15:24:01,473 - INFO - Successfully logged into Screener.in
-2025-03-14 15:24:04,858 - INFO - Processed page 1. Total companies: 50
-2025-03-14 15:24:08,113 - INFO - Processed page 2. Total companies: 100
-2025-03-14 15:24:11,366 - INFO - Processed page 3. Total companies: 150
-2025-03-14 15:24:14,622 - INFO - Processed page 4. Total companies: 200
-2025-03-14 15:24:17,862 - INFO - Processed page 5. Total companies: 250
-2025-03-14 15:24:21,112 - INFO - Processed page 6. Total companies: 300
-2025-03-14 15:24:24,380 - INFO - Processed page 7. Total companies: 350
-2025-03-14 15:24:27,680 - INFO - Processed page 8. Total companies: 396
-2025-03-14 15:24:30,931 - INFO - No new companies found on page 9. Stopping pagination.
-2025-03-14 15:24:30,935 - INFO - Scraping complete. Data saved to 'Mid_Cap.csv'. Total companies scraped: 396
-2025-03-14 15:24:30,936 - INFO - Scraping Process Completed for MidCap Companies
-2025-03-14 15:35:48,509 - INFO - Scraping Process Started for MidCap Companies
-2025-03-14 15:35:55,558 - INFO - Successfully logged into Screener.in
-2025-03-14 15:35:58,867 - INFO - Processed page 1. Total companies: 50
-2025-03-14 15:36:02,121 - INFO - Processed page 2. Total companies: 100
-2025-03-14 15:36:05,392 - INFO - Processed page 3. Total companies: 150
-2025-03-14 15:36:08,656 - INFO - Processed page 4. Total companies: 200
-2025-03-14 15:36:11,904 - INFO - Processed page 5. Total companies: 250
-2025-03-14 15:36:15,180 - INFO - Processed page 6. Total companies: 300
-2025-03-14 15:36:18,446 - INFO - Processed page 7. Total companies: 350
-2025-03-14 15:36:21,770 - INFO - Processed page 8. Total companies: 396
-2025-03-14 15:36:25,028 - INFO - No new companies found on page 9. Stopping pagination.
-2025-03-14 15:36:25,035 - INFO - Scraping complete. Data saved to 'Mid_Cap.csv'. Total companies scraped: 396
-2025-03-14 15:36:25,035 - INFO - Scraping Process Completed for MidCap Companies
+2025-03-14 16:27:53,627 - INFO - Scraping Process Started for MidCap Companies
+2025-03-14 16:28:00,831 - INFO - Successfully logged into Screener.in
+2025-03-14 16:28:04,153 - INFO - Processed page 1. Total companies: 50
+2025-03-14 16:28:07,411 - INFO - Processed page 2. Total companies: 100
+2025-03-14 16:28:10,665 - INFO - Processed page 3. Total companies: 150
+2025-03-14 16:28:13,915 - INFO - Processed page 4. Total companies: 200
+2025-03-14 16:28:17,163 - INFO - Processed page 5. Total companies: 250
+2025-03-14 16:28:20,435 - INFO - Processed page 6. Total companies: 300
+2025-03-14 16:28:23,717 - INFO - Processed page 7. Total companies: 350
+2025-03-14 16:28:27,014 - INFO - Processed page 8. Total companies: 396
+2025-03-14 16:28:30,262 - INFO - No new companies found on page 9. Stopping pagination.
+2025-03-14 16:28:30,268 - INFO - Scraping complete. Data saved to 'Mid_Cap.csv'. Total companies scraped: 396
+2025-03-14 16:28:30,268 - INFO - Scraping Process Completed for MidCap Companies
