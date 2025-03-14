@@ -2,33 +2,46 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
 import pandas as pd
 import time
 import yaml
+import logging
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('Log\LargeCap_screener_scraping.log'),
+        logging.StreamHandler()  # This will also log to console
+    ]
+)
+logger = logging.getLogger(__name__)
+
+logger.info("Scraping Process Started for LargeCap Companies")
 
 # Setup Selenium WebDriver
 service = Service('chromedriver.exe')
 chrome_options = Options()
 chrome_options.add_argument("--headless=new")
 
-
 driver = webdriver.Chrome(service=service, options=chrome_options)
 
 # Open Screener Website and login
 driver.get('https://www.screener.in/')
-#time.sleep(2)  # Wait for the page to load
 driver.find_element(By.XPATH, '/html/body/nav/div[2]/div/div/div/div[2]/div[2]/a[1]').click()
-#time.sleep(2)  # Allow login page to load
 
-with open('gitignore\Config.yaml', 'r') as configuration:
+# Load credentials from Config.yaml
+with open('Config.yaml', 'r') as configuration:
     config = yaml.load(configuration, Loader=yaml.SafeLoader)
 
+# Perform login
 driver.find_element(By.XPATH, '/html/body/main/div[2]/div[2]/form/div[1]/input').send_keys(config['Screener']['id'])
 driver.find_element(By.XPATH, '/html/body/main/div[2]/div[2]/form/div[2]/input').send_keys(config['Screener']['pass'])
 driver.find_element(By.XPATH, '/html/body/main/div[2]/div[2]/form/button').click()
-#time.sleep(5)  # Wait for login to complete
+time.sleep(5)  # Wait for login to complete
+logger.info("Successfully logged into Screener.in")
 
 # Base URL for pagination
 base_url = "https://www.screener.in/screen/raw/?sort=&order=&source_id=&query=Market+Capitalization+%3E%3D+20000&page="
@@ -41,67 +54,88 @@ file_df = pd.DataFrame(columns=[
     "Quarterly_Sales_Variation_Percentage", "Return_on_Capital_Employed_Percentage"
 ])
 
-# Loop through multiple pages
-for page_number in range(1, 100):  # Assuming 10 pages
-    # Update the URL with the current page number
+# Loop through pages
+for page_number in range(1, 100):  # Assuming up to 100 pages or until no new data
     url = f"{base_url}{page_number}"
     driver.get(url)
     time.sleep(3)  # Allow page to load
 
-    # Parse the page content
-    soap = BeautifulSoup(driver.page_source, 'html.parser')
+    # Parse the page content with BeautifulSoup
+    soup = BeautifulSoup(driver.page_source, 'html.parser')
 
-    # Initialize lists to store Serial Numbers and Company Names
-    Serial_Number = []
-    Company_Name = []
+    # Find the table containing the data
+    table = soup.find('table', class_='data-table')
+    if not table:
+        logger.warning(f"No table found on page {page_number}. Stopping pagination.")
+        break
 
-    # Extract Serial Numbers and Company Names
-    text_elements = soap.find_all('td', class_='text')
-    for idx, element in enumerate(text_elements):
-        if idx % 2 != 0:
-            Company_Name.append(element.text.strip())
-        else:
-            Serial_Number.append(element.text.strip())
+    # Initialize data dictionary for the current page
+    data = {
+        "Serial_Number": [],
+        "Company_Name": [],
+        "Current_Market_Price_Rs": [],
+        "Price_to_Earnings_Ratio": [],
+        "Market_Capitalization_Rs_Cr": [],
+        "Dividend_Yield_Percentage": [],
+        "Net_Profit_Quarter_Rs_Cr": [],
+        "Quarterly_Profit_Variation_Percentage": [],
+        "Sales_Quarter_Rs_Cr": [],
+        "Quarterly_Sales_Variation_Percentage": [],
+        "Return_on_Capital_Employed_Percentage": []
+    }
 
-    # Initialize a dictionary for the column data
-    columns_data = {f'Column {i + 1}': [] for i in range(9)}
+    # Extract rows from the table body
+    rows = table.find('tbody').find_all('tr')
 
-    # Extract data for the columns
-    column_elements = soap.find_all('td', class_="")
-    for idx, element in enumerate(column_elements):
-        column_index = idx % 9
-        columns_data[f'Column {column_index + 1}'].append(element.text.strip())
+    # Flag to check if we have any data on this page
+    has_data = False
 
-    # Combine data into a list of tuples
-    data = list(zip(
-        Serial_Number,
-        Company_Name,
-        columns_data['Column 1'],
-        columns_data['Column 2'],
-        columns_data['Column 3'],
-        columns_data['Column 4'],
-        columns_data['Column 5'],
-        columns_data['Column 6'],
-        columns_data['Column 7'],
-        columns_data['Column 8'],
-        columns_data['Column 9']
-    ))
+    for row in rows:
+        if row.find('th'):
+            continue
+
+        cols = row.find_all('td')
+        if not cols:
+            continue
+
+        if len(cols) != 11:
+            continue
+
+        data["Serial_Number"].append(cols[0].text.strip())
+        data["Company_Name"].append(cols[1].text.strip())
+        data["Current_Market_Price_Rs"].append(cols[2].text.strip())
+        data["Price_to_Earnings_Ratio"].append(cols[3].text.strip())
+        data["Market_Capitalization_Rs_Cr"].append(cols[4].text.strip())
+        data["Dividend_Yield_Percentage"].append(cols[5].text.strip())
+        data["Net_Profit_Quarter_Rs_Cr"].append(cols[6].text.strip())
+        data["Quarterly_Profit_Variation_Percentage"].append(cols[7].text.strip())
+        data["Sales_Quarter_Rs_Cr"].append(cols[8].text.strip())
+        data["Quarterly_Sales_Variation_Percentage"].append(cols[9].text.strip())
+        data["Return_on_Capital_Employed_Percentage"].append(cols[10].text.strip())
+
+        has_data = True
+
+    if not has_data:
+        logger.info(f"No more data found on page {page_number}. Stopping pagination.")
+        break
 
     # Create a DataFrame for the current page
-    df = pd.DataFrame(data, columns=file_df.columns)
+    page_df = pd.DataFrame(data)
 
-    new_data = df[~df['Company_Name'].isin(file_df['Company_Name'])]
-    
+    # Check for duplicates based on Company_Name
+    new_data = page_df[~page_df['Company_Name'].isin(file_df['Company_Name'])]
+
     if new_data.empty:
-        break  # Stop if no new companies are found
+        logger.info(f"No new companies found on page {page_number}. Stopping pagination.")
+        break
 
-    # Append the current DataFrame to the final DataFrame
-    file_df = pd.concat([file_df, df], ignore_index=True)
-
-    print(page_number)
+    # Append the new data to the final DataFrame
+    file_df = pd.concat([file_df, new_data], ignore_index=True)
+    logger.info(f"Processed page {page_number}. Total companies: {len(file_df)}")
 
 # Save the final DataFrame to a CSV file
-file_df.to_csv('Large_Cap.csv', index=False)
-
+file_df.to_csv('Data/Large_Cap.csv', index=False)
+logger.info(f"Scraping complete. Data saved to 'Large_Cap.csv'. Total companies scraped: {len(file_df)}")
+logger.info("Scraping Process Completed for LargeCap Companies")
 # Close the WebDriver
 driver.quit()

@@ -1,0 +1,6 @@
+selenium
+BeautifulSoup4
+pandas
+PyYAML
+
+# install dependency -> pip install -r requirements.txt
