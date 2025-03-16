@@ -10,3 +10,15 @@
 2025-03-14 16:27:30,208 - INFO - No new companies found on page 8. Stopping pagination.
 2025-03-14 16:27:30,212 - INFO - Scraping complete. Data saved to 'Large_Cap.csv'. Total companies scraped: 309
 2025-03-14 16:27:30,213 - INFO - Scraping Process Completed for LargeCap Companies
+2025-03-16 08:28:38,458 - INFO - Scraping Process Started for LargeCap Companies
+2025-03-16 08:28:45,633 - INFO - Successfully logged into Screener.in
+2025-03-16 08:28:49,017 - INFO - Processed page 1. Total companies: 50
+2025-03-16 08:28:52,263 - INFO - Processed page 2. Total companies: 100
+2025-03-16 08:28:55,508 - INFO - Processed page 3. Total companies: 150
+2025-03-16 08:28:58,803 - INFO - Processed page 4. Total companies: 200
+2025-03-16 08:29:02,067 - INFO - Processed page 5. Total companies: 250
+2025-03-16 08:29:05,340 - INFO - Processed page 6. Total companies: 300
+2025-03-16 08:29:08,565 - INFO - Processed page 7. Total companies: 309
+2025-03-16 08:29:11,761 - INFO - No new companies found on page 8. Stopping pagination.
+2025-03-16 08:29:11,768 - INFO - Scraping complete. Data saved to 'Large_Cap.csv'. Total companies scraped: 309
+2025-03-16 08:29:13,997 - INFO - Scraping Process Completed for LargeCap Companies
